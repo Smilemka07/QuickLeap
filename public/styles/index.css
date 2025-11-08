@@ -1,0 +1,22 @@
+*{
+  font-family: var(--bs-body-font-family);
+}
+
+.flex-container {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+  height: 100vh; /* Example: to fill the viewport height */
+
+}
+.btn {
+    margin-top: 0.8rem;
+}
+form {
+    padding: 2rem;
+}
+.page-heading{
+position: fixed;
+top: 1.6rem;
+left: 2rem;
+}

@@ -1,0 +1,33 @@
+<%- include("partials/header") %>
+
+<div class="tutorial-page container">
+  <h1 class="mb-3"><%= tutorial.title %></h1>
+  <p class="text-muted mb-4"><%= tutorial.description %></p>
+
+  <% if (tutorial.type === "video") { %>
+    <div class="video-section mb-5">
+      <video controls autoplay width="100%" height="480">
+        <source src="/<%= tutorial.content_url %>" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <p class="text-secondary mt-2">Duration: <%= tutorial.duration %> mins</p>
+    </div>
+
+  <% } else if (tutorial.type === "notes") { %>
+    <div class="notes-section">
+      <% if (tutorial.text_content) { %>
+        <pre><%= tutorial.text_content %></pre>
+      <% } else if (tutorial.content_url) { %>
+        <iframe src="/<%= tutorial.content_url %>" width="100%" height="600px"></iframe>
+      <% } else { %>
+        <p>No notes available.</p>
+      <% } %>
+    </div>
+
+  <% } else { %>
+    <p>Unknown tutorial type. Coming soon.</p>
+  <% } %>
+
+</div>
+
+<%- include("partials/footer") %>

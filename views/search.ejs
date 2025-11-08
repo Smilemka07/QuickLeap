@@ -1,0 +1,73 @@
+<%-include ("partials/header") %>
+
+<div id="main">
+  <%-include ("partials/navbar") %>
+
+  <!-- left side pannel  -->
+  <%-include ("partials/leftPanel") %>
+
+  <!-- center pannel  -->
+
+  <div id="center_pannel" class="col-8">
+    <div class="search-bar">
+      <form id="search-form" action="search" method="GET">
+        <input
+          type="text"
+          name="query"
+          class="form-control search-input"
+          placeholder="Search users, tutorials, or interests…"
+        />
+      </form>
+      <button class="btn search-btn" id="search-btn"><i class="fas fa-search"></i></button>
+    </div>
+
+    <div class="results container mt-4">
+      <% if (users.length > 0) { %>
+      <h3>Users</h3>
+      <div class="user-results">
+        <% users.forEach(u => { %>
+        <a href="/profile/view/<%= u.id %>" class="card">
+          <img
+            src="/<%= u.profile_photo %>"
+            class="rounded-circle"
+            width="40"
+            height="40"
+          />
+          <div class="card-body">
+            <h5><%= u.user_name %></h5>
+            <p><%= u.skills.join(", ") %></p>
+          </div>
+        </a>
+        <% }) %>
+      </div>
+      <% } %> <% if (tutorials.length > 0) { %>
+      <h3 class="mt-4">Tutorials</h3>
+      <div class="tutorial-results">
+        <% tutorials.forEach(t => { %>
+        <div class="card">
+          <img
+            src="/<%= t.thumbnail %>"
+            width="150"
+            height="100"
+            style="object-fit: cover"
+          />
+          <div class="card-body">
+            <h5><%= t.title %></h5>
+            <p><%= t.description %></p>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+      <% } %> <% if (users.length === 0 && tutorials.length === 0 && searchTerm)
+      { %>
+      <p>No results found for "<%= searchTerm %>".</p>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById("search-btn").addEventListener("click", function () {
+    document.getElementById("search-form").submit();
+  });
+</script>

@@ -1,0 +1,26 @@
+.search-bar{
+    display: flex;
+   height: 4rem;
+   align-items: center;
+}
+
+.fa-search{
+  color: white;
+}
+
+.search-input{
+    width: 100vh;
+}
+
+.search-btn{
+    height: 2.4rem;
+    width: 6rem;
+}
+
+.matches{
+    margin: 2rem;
+}
+
+.vanish{
+    display: none;
+}

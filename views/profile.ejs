@@ -1,0 +1,62 @@
+<%-include("partials/header") %>
+
+<div class="profile_main container">
+  <div class="col-3 left_side bg_box">
+    <img src="/<%= user.profile_photo %>" alt="Profile picture" class="profile-icon" />
+    <h3><%= user.user_name %></h3>
+    <p><%= user.email %></p>
+    <div class="about-sec">
+      <h4>About</h4>
+      <p><%= user.bio %></p>
+    </div>
+    <div class="interests-sec">
+      <h4>Interests</h4>
+      <div id="tags"></div>
+    </div>
+   <% if (isOwnProfile) { %>
+    <button class="btn btn-primary"><a href="/logout">Logout</a></button>
+    <% } %>
+  </div>
+
+  <div class="col-9 right_side bg_box">
+
+    <!-- tutorials published by user  -->
+
+    <div class="published">
+      <h2>Tutorials published</h2>
+      <div class="published-container">
+        <% tutorials.forEach(tut => { %>
+        <div class="tutorial_card card" style="width: 18rem; margin-top: 1rem">
+          <img
+            class="card-img-top"
+            src="/<%= tut.thumbnail %>"
+            width="286px"
+            height="180px"
+            style="object-fit: cover"
+            alt="Card image cap"
+          />
+          <div class="card-body">
+            <h5 class="card-title"><%= tut.title %></h5>
+            <p class="card-text"><%= tut.description %></p>
+            <a href="#" class="btn btn-primary">Watch</a>
+          </div>
+        </div>
+         <% }) %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const skills = (<%- JSON.stringify(user.skills) %>);
+  const container = document.getElementById("tags");
+
+   container.innerHTML = "";
+   skills.forEach(skill => {
+    const tag = document.createElement("p");
+    tag.classList.add("tag");
+    tag.textContent = skill;
+    container.appendChild(tag);
+  });
+</script>
+

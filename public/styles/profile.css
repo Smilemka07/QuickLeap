@@ -1,0 +1,36 @@
+.profile_main {
+  display: flex;
+  gap: 20px;
+  justify-content: space-around;
+  margin-top: 4rem;
+}
+
+#tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag {
+  background-color: #ffe0e7;
+  color: #831941;
+  display: inline;
+  border-radius: 2.4rem;
+  padding: 3px 12px 3px 12px;
+  font-weight: 700;
+  font-size: small;
+  margin-bottom: 0;
+}
+
+.about-sec,
+.interests-sec,
+.watched,
+.published {
+  margin-bottom: 2rem;
+}
+
+.watched-container,
+.published-container {
+  overflow-x: auto;
+  white-space: nowrap;
+}

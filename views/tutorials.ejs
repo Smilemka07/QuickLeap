@@ -1,0 +1,52 @@
+<%-include ("partials/header") %>
+<div id="main">
+  <%-include ("partials/navbar") %>
+
+  <!-- left side pannel  -->
+  <%-include ("partials/leftPanel") %>
+
+  <div id="center_pannel" class="col-8">
+    <div class="tutorial-form">
+    <form
+      action="/createTutorial"
+      method="POST"
+      class="border border-1 rounded-4"
+    >
+      <div class="mb-3">
+        <!-- Title -->
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control inputs" id="title" name="title" required />
+</div>
+        <!-- Description -->
+         <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea id="description" class="form-control inputs" name="description" rows="3"></textarea>
+        </div>
+
+        <!-- Content type -->
+          <div class="mb-3">
+        <label for="content_type" class="form-label">Content Type</label>
+        <select id="content_type" class="form-select inputs" name="content_type" onchange="toggleFields()">
+          <option selected value="notes">Notes</option>
+          <option value="video">Video</option>
+        </select>
+</div>
+        <!-- Notes (text) -->
+        <div id="notesField" class="mb-3">
+          <label for="notes" class="form-label">Notes</label>
+          <input class="form-control inputs" type="file" id="notes" name="notes" multiple>
+        </div>
+
+        <!-- Video upload -->
+        <div id="videoField" style="display: none" class="mb-3">
+          <label for="video" class="form-label">Upload Video</label>
+          <input class="form-control inputs" type="file" id="video" name="video" />
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn-primary create">Create</button>
+      </div>
+    </form>
+  </div>
+  </div>
+</div>

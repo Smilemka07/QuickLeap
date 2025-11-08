@@ -1,0 +1,107 @@
+<%-include ("partials/header") %>
+<div id="main">
+
+ <%-include ("partials/navbar") %>
+
+  <!-- left side pannel  -->
+  <%-include ("partials/leftPanel") %>
+
+
+
+      <!-- center pannel  -->
+
+      <div id="center_pannel" class="col-8">
+
+        <!-- first section having greeting and quick status  -->
+        <div id="greeting_section" class="bg_box">
+          <h1 class="heading">Hi, <%= user.user_name %>!</h1>
+          <div id="quick_status">
+            <div class="card_bg">
+              <i class="fas fa-users card_icon"></i>
+              <h6 class="card_heading">Connections made:</h6>
+              <p class="card_digit"><%= stats.matches %></p>
+            </div>
+            <div class="card_bg">
+              <i class="fas fa-user card_icon"></i>
+              <h6 class="card_heading">Pending requests:</h6>
+              <p class="card_digit"><%= stats.requests%></p>
+            </div>
+            <div class="card_bg">
+              <i class="fas fa-message card_icon"></i>
+              <h6 class="card_heading">Messages waiting:</h6>
+              <p class="card_digit"><%= stats.messages%></p>
+            </div>
+          </div>
+        </div>
+
+         <!-- second section - tutorial section  -->
+        <div id="tutorial_section" class="bg_box">
+          <h1 class="heading">Continue Learning</h1>
+          <!-- cards -->
+          <div class="tutorial_container">
+            <% if (tutorials.length > 0) { %>
+               <% tutorials.forEach(tut => { %>
+            <div class="tutorial_card card" style="width: 18rem">
+              <img
+                class="card-img-top"
+                src="/<%= tut.thumbnail %>"
+                width="286px"
+                height="180px"
+                style="object-fit: cover"
+                alt="Card image cap"
+              />
+              <div class="card-body">
+                <h5 class="card-title"><%= tut.title %></h5>
+                <p class="card-text"><%= tut.description %></p>
+                <a href="/tutorial/<%= tut.id %>" class="btn btn-primary">Let's complete</a>
+              </div>
+            </div>  
+            <% }) %>
+    <% } else { %>
+      <p>You haven’t started any tutorials yet. Go explore and start learning!</p>
+    <% } %>
+          </div>
+        </div>
+
+         <!-- matches section  -->
+          <div id="matches_section" class="bg_box">
+            <h1 class="heading">Your Matches So Far</h1>
+            <!-- small cards  -->
+             <div class="tutorial_container matches_container">
+
+              <!-- card -->
+               <% matches.forEach(friend => { %>
+              <a href="/profile/view/<%= friend.friend_id %>" class="match_link">
+              <div class="match_card card">
+                <img  src="/<%= friend.friend_pfp %>" class="rounded-circle pfp" width="40px" height="40px" style="object-fit: cover;" alt="Profile icon">
+                <div class="card-body">
+                <h5 class="card-title"><%= friend.friend_name %></h5>
+                <p class="card-text"><%= friend.friend_skills %></p>
+                </div>
+              </div>
+             </a>
+             <%  })%>
+             </div>
+          </div>
+
+          <!-- requestes pannel  -->
+            <%-include ("partials/footer") %>
+          </div>
+          
+
+        <div id="right_pannel" class="bg_box col-2">
+          <div>
+            <p>
+              Quick Tips / Highlights Suggested users to match with
+              Announcements App tips (“Add your top 3 skills to get better
+              matches”)
+            </p>
+          </div>
+        </div>
+       
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/scripts/dashboard.js"></script>
