@@ -2,7 +2,7 @@
 .env
 
 # Node dependencies
-node_modules/
+node_modules
 
 # Logs
 *.log
@@ -12,3 +12,10 @@ npm-debug.log*
 .vscode/
 .idea/
 .DS_Store
+
+# Optional uploads
+uploads/
+public/uploads/
+
+# database queries 
+queries.sql 

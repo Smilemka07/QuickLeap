@@ -40,7 +40,6 @@ const db = new pg.Client({
 
 db.connect();
 
-
 //routes
 app.get("/", (req, res) => {
   res.render("index");
@@ -115,11 +114,14 @@ app.get("/dashboard", async (req, res) => {
     const matchesResult = await db.query(matchesQuery, [req.user.id]);
 
     const watchedQuery = `
-      SELECT t.*
-      FROM tutorials t
-      JOIN user_tutorials ut ON t.id = ut.watched_tutorial_id
-      WHERE ut.watcher_id = $1
-      ORDER BY ut.watched_at DESC
+      SELECT DISTINCT ON (t.id)
+       t.*, ut.watched_at
+FROM tutorials t
+JOIN user_tutorials ut
+  ON t.id = ut.watched_tutorial_id
+WHERE ut.watcher_id = $1
+ORDER BY t.id, ut.watched_at DESC;
+
     `;
 
     const watchedResult = await db.query(watchedQuery, [req.user.id]);
@@ -304,12 +306,14 @@ app.get("/profile/view/:id", async (req, res) => {
   }
 });
 
-//view tutorial 
+//view tutorial
 app.get("/tutorial/:id", async (req, res) => {
   const { id } = req.params;
   try {
-
-    const tutorialResult = await db.query("SELECT * FROM tutorials WHERE id = $1", [id]);
+    const tutorialResult = await db.query(
+      "SELECT * FROM tutorials WHERE id = $1",
+      [id]
+    );
 
     if (tutorialResult.rows.length === 0) {
       return res.status(404).send("Tutorial not found");
@@ -331,7 +335,6 @@ app.get("/tutorial/:id", async (req, res) => {
     res.status(500).send("Error loading tutorial");
   }
 });
-
 
 // login and register post routes
 app.post(
