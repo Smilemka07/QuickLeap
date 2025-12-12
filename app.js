@@ -68,8 +68,8 @@ app.get("/dashboard", async (req, res) => {
   if (req.isAuthenticated()) {
     const result = await db.query(
       `SELECT COUNT(*) AS total
-     FROM matches 
-     WHERE mentor_id = $1 OR mentee_id = $1`,
+       FROM matches 
+       WHERE mentor_id = $1 OR mentee_id = $1`,
       [req.user.id]
     );
 
@@ -80,34 +80,39 @@ app.get("/dashboard", async (req, res) => {
 
     const messageResult = await db.query(
       `SELECT COUNT(*) AS total FROM messages WHERE match_id IN (
-     SELECT id FROM matches WHERE match_id = $1 OR sender_id = $1 )
-     AND sender_id != $1
-     AND is_read = false`,
+         SELECT id FROM matches WHERE match_id = $1 OR sender_id = $1 )
+       AND sender_id != $1
+       AND is_read = false`,
       [req.user.id]
     );
 
     const matchesQuery = ` 
     SELECT 
      m.id AS match_id,  
+
     CASE
-    WHEN m.mentor_id = $1 THEN mentee.id
-    ELSE mentor.id
- END AS friend_id,
-      CASE
-    WHEN m.mentor_id = $1 THEN mentee.user_name
-    ELSE mentor.user_name
-  END AS friend_name,
-   CASE
-    WHEN m.mentor_id = $1 THEN mentee.profile_photo
-    ELSE mentor.profile_photo
-  END AS friend_pfp,
-   CASE
-    WHEN m.mentor_id = $1 THEN mentee.skills
-    ELSE mentor.skills
-  END AS friend_skills
+     WHEN m.mentor_id = $1 THEN mentee.id
+     ELSE mentor.id
+    END AS friend_id,
+
+    CASE
+     WHEN m.mentor_id = $1 THEN mentee.user_name
+     ELSE mentor.user_name
+    END AS friend_name,
+
+    CASE
+     WHEN m.mentor_id = $1 THEN mentee.profile_photo
+     ELSE mentor.profile_photo
+    END AS friend_pfp,
+
+    CASE
+     WHEN m.mentor_id = $1 THEN mentee.skills
+     ELSE mentor.skills
+    END AS friend_skills
+
     FROM matches m 
-    JOIN cradentials mentor ON m.mentor_id = mentor.id
-    JOIN cradentials mentee ON m.mentee_id = mentee.id 
+     JOIN cradentials mentor ON m.mentor_id = mentor.id
+     JOIN cradentials mentee ON m.mentee_id = mentee.id 
     WHERE m.mentor_id = $1 or m.mentee_id = $1
     `;
 
@@ -116,13 +121,12 @@ app.get("/dashboard", async (req, res) => {
     const watchedQuery = `
       SELECT DISTINCT ON (t.id)
        t.*, ut.watched_at
-FROM tutorials t
-JOIN user_tutorials ut
-  ON t.id = ut.watched_tutorial_id
-WHERE ut.watcher_id = $1
-ORDER BY t.id, ut.watched_at DESC;
-
-    `;
+      FROM tutorials t
+      JOIN user_tutorials ut
+       ON t.id = ut.watched_tutorial_id
+      WHERE ut.watcher_id = $1
+      ORDER BY t.id, ut.watched_at DESC;
+      `;
 
     const watchedResult = await db.query(watchedQuery, [req.user.id]);
 
@@ -134,7 +138,6 @@ ORDER BY t.id, ut.watched_at DESC;
 
     const matchesList = matchesResult.rows;
     const watchedTutorials = watchedResult.rows;
-    console.log(watchedTutorials);
 
     res.render("dashboard", {
       user: req.user,
@@ -152,8 +155,11 @@ ORDER BY t.id, ut.watched_at DESC;
   }
 });
 
-//create tutorials
+//create tutorials and create tutorials tab
 app.get("/tutorials", (req, res) => {
+  if (!req.user) {
+    return res.redirect("/login");
+  }
   res.render("tutorials", { currentPage: "tutorials" });
 });
 
@@ -166,7 +172,7 @@ app.post("/createTutorial", async (req, res) => {
   try {
     const query = `
       INSERT INTO tutorials 
-      (creator_id, title, description, content_type, video_url, notes, thumbnail)
+       (creator_id, title, description, content_type, video_url, notes, thumbnail)
       VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *;
     `;
@@ -191,9 +197,118 @@ app.post("/createTutorial", async (req, res) => {
 });
 
 //messages tab
-app.get("/messages", (req, res) => {
-  res.render("messages", { currentPage: "messages" });
+
+app.post("/messages", async (req, res) => {
+  const content = req.body;
+  const sender_id = req.session.body;
+  try {
+    const query = `
+    INSERT INTO messages 
+    (sender_id, content)
+    VALUES ($1,$2)
+   `;
+  } catch (err) {
+    console.error("Messages Error", err);
+    res.status(500).send("Error loading messages");
+  }
 });
+
+app.get("/messages", async (req, res) => {
+  if (!req.user) {
+    return res.redirect("/login");
+  }
+
+  try {
+    const listQuery = `
+    SELECT 
+     m.id AS match_id,  
+
+    CASE
+     WHEN m.mentor_id = $1 THEN mentee.id
+     ELSE mentor.id
+    END AS friend_id,
+
+    CASE
+     WHEN m.mentor_id = $1 THEN mentee.user_name
+     ELSE mentor.user_name
+    END AS friend_name,
+
+    CASE
+     WHEN m.mentor_id = $1 THEN mentee.profile_photo
+     ELSE mentor.profile_photo
+    END AS friend_pfp,
+
+    CASE
+     WHEN m.mentor_id = $1 THEN mentee.skills
+     ELSE mentor.skills
+    END AS friend_skills,
+
+     msg.content AS last_message,
+     msg.sent_at AS last_message_time,
+     msg.sender_id AS last_message_sender
+
+    FROM matches m 
+     JOIN cradentials mentor ON m.mentor_id = mentor.id
+     JOIN cradentials mentee ON m.mentee_id = mentee.id 
+
+     LEFT JOIN LATERAL (
+     SELECT content, sent_at, sender_id
+     FROM messages
+     WHERE match_id = m.id
+     ORDER BY sent_at DESC
+     LIMIT 1
+     ) msg ON true
+
+    WHERE m.mentor_id = $1 or m.mentee_id = $1
+
+    ORDER BY last_message_time DESC NULLS LAST;
+    `;
+
+    const listResult = await db.query(listQuery, [req.user.id]);
+    const list = listResult.rows;
+    console.log(list);
+    res.render("messages", { currentPage: "messages", matches: list });
+  } catch (err) {
+    console.error("List error", err);
+    res.status(500).send("Error loading matches list");
+  }
+});
+
+app.get("messages/:matchId", async(req, res) => {
+  if (!req.user) {
+    return res.redirect("/login");
+  }
+
+  try {
+   const query =  `SELECT
+    msg.id,
+    msg.sender_id,
+    c.user_name AS sender_name,
+    c.profile_photo AS sender_pfp,
+    msg.content,
+    msg.sent_at
+   FROM messages msg
+   JOIN cradentials c ON msg.sender_id = c.id
+   WHERE msg.match_id = $1
+   ORDER BY msg.sent_at ASC;`
+
+  } catch (error) {
+    
+  }
+  const messagesResult = await db.query(messagesQuery, [matchId]);
+  const messages = messagesResult.rows;
+  const matchId = req.params.matchId;
+
+  console.table(messagesResult.rows);
+
+  res.render("messages", {
+    currentPage: "messages",
+    matchId: matchId,
+    messages: messages,
+  });
+});
+
+
 
 //search tab
 app.get("/search", async (req, res) => {
@@ -211,9 +326,9 @@ app.get("/search", async (req, res) => {
       // Search in users
       const userResult = await db.query(
         `SELECT id, user_name, profile_photo, skills 
-         FROM cradentials 
+        FROM cradentials 
          WHERE LOWER(user_name) LIKE $1 
-         OR LOWER(skills::text) LIKE $1`,
+          OR LOWER(skills::text) LIKE $1`,
         [`%${searchTerm}%`]
       );
 
@@ -224,7 +339,7 @@ app.get("/search", async (req, res) => {
         `SELECT id, title, description, thumbnail 
          FROM tutorials 
          WHERE LOWER(title) LIKE $1 
-         OR LOWER(description) LIKE $1`,
+          OR LOWER(description) LIKE $1`,
         [`%${searchTerm}%`]
       );
 

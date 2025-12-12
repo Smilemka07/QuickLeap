@@ -7,30 +7,43 @@
 
   <div id="center_pannel" class="col-8">
     <section class="chat border rounded">
+      <% if(typeof matchId == "undefined"){%>
       <!-- Chat List -->
       <div class="chat-list">
+        <% matches.forEach(match => { %> 
         <div class="chat-item messages-active">
           <img
-            src="/images/Pfa.png"
+            src="/<%= match.friend_pfp %>"
             alt="Profile picture"
             class="profile-icon"
           />
           <div>
-            <p><strong>Alice</strong></p>
-            <p>Hey! How are you?</p>
+            <p><strong><%= match.friend_name %></strong></p>
+            <p><%= match.last_message ?? "Say hello 👋" %></p>
           </div>
         </div>
-        <div class="chat-item ">
-           <img
-            src="/images/Pfa.png"
+        <% }) %> 
+      </div>
+
+      <!-- Chat Window -->
+      <div class="chat-window"></div>
+
+      <%}else{%>
+      <!-- Chat List -->
+      <div class="chat-list">
+        <% matches.forEach(match => { %> 
+        <div class="chat-item messages-active">
+          <img
+            src="/<%= match.friend_pfp %>"
             alt="Profile picture"
             class="profile-icon"
           />
-           <div>
-            <p><strong>Bob</strong></p>
-            <p>Let’s catch up tomorrow.</p>
+          <div>
+            <p><strong><%= match.friend_name %></strong></p>
+            <p><%= match.last_message ?? "Say hello 👋" %></p>
           </div>
         </div>
+        <% }) %> 
       </div>
 
       <!-- Chat Window -->
@@ -45,14 +58,22 @@
           <div class="message received">Doing well :)</div>
         </div>
 
-        <form class="chat-input">
+        <!-- form -->
+        <form
+          id="chat-input"
+          class="chat-input"
+          action="/messages"
+          method="POST"
+        >
           <input
             type="text"
+            name="content"
             class="form-control"
             placeholder="Type a message..."
           />
-          <button type="submit" class="btn">Send</button>
+          <button type="submit" id="send-button" class="btn">Send</button>
         </form>
+        <%}%>
       </div>
     </section>
   </div>
