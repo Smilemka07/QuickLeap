@@ -274,13 +274,13 @@ app.get("/messages", async (req, res) => {
   }
 });
 
-app.get("messages/:matchId", async(req, res) => {
+app.get("/messages/:matchId", async (req, res) => {
   if (!req.user) {
     return res.redirect("/login");
   }
 
   try {
-   const query =  `SELECT
+    const messagesQuery = `SELECT
     msg.id,
     msg.sender_id,
     c.user_name AS sender_name,
@@ -290,25 +290,25 @@ app.get("messages/:matchId", async(req, res) => {
    FROM messages msg
    JOIN cradentials c ON msg.sender_id = c.id
    WHERE msg.match_id = $1
-   ORDER BY msg.sent_at ASC;`
-
-  } catch (error) {
+   ORDER BY msg.sent_at ASC;`;
     
+    const matchId = req.params.matchId;
+    const messagesResult = await db.query(messagesQuery, [matchId]);
+    const messages = messagesResult.rows;
+    
+    console.table(messagesResult.rows);
+
+    res.render("messages", {
+      currentPage: "messages",
+      matchId: matchId,
+      messages: messages,
+       matches: list,
+    });
+  } catch (err) {
+    console.log("Chat error", err);
+    res.status(500).send("Error loading the conversation..");
   }
-  const messagesResult = await db.query(messagesQuery, [matchId]);
-  const messages = messagesResult.rows;
-  const matchId = req.params.matchId;
-
-  console.table(messagesResult.rows);
-
-  res.render("messages", {
-    currentPage: "messages",
-    matchId: matchId,
-    messages: messages,
-  });
 });
-
-
 
 //search tab
 app.get("/search", async (req, res) => {

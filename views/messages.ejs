@@ -9,42 +9,15 @@
     <section class="chat border rounded">
       <% if(typeof matchId == "undefined"){%>
       <!-- Chat List -->
-      <div class="chat-list">
-        <% matches.forEach(match => { %> 
-        <div class="chat-item messages-active">
-          <img
-            src="/<%= match.friend_pfp %>"
-            alt="Profile picture"
-            class="profile-icon"
-          />
-          <div>
-            <p><strong><%= match.friend_name %></strong></p>
-            <p><%= match.last_message ?? "Say hello 👋" %></p>
-          </div>
-        </div>
-        <% }) %> 
-      </div>
+     <%-include ("partials/chatlist") %>
 
       <!-- Chat Window -->
       <div class="chat-window"></div>
 
       <%}else{%>
+      
       <!-- Chat List -->
-      <div class="chat-list">
-        <% matches.forEach(match => { %> 
-        <div class="chat-item messages-active">
-          <img
-            src="/<%= match.friend_pfp %>"
-            alt="Profile picture"
-            class="profile-icon"
-          />
-          <div>
-            <p><strong><%= match.friend_name %></strong></p>
-            <p><%= match.last_message ?? "Say hello 👋" %></p>
-          </div>
-        </div>
-        <% }) %> 
-      </div>
+     <%-include ("partials/chatlist") %>
 
       <!-- Chat Window -->
       <div class="chat-window">
@@ -59,20 +32,7 @@
         </div>
 
         <!-- form -->
-        <form
-          id="chat-input"
-          class="chat-input"
-          action="/messages"
-          method="POST"
-        >
-          <input
-            type="text"
-            name="content"
-            class="form-control"
-            placeholder="Type a message..."
-          />
-          <button type="submit" id="send-button" class="btn">Send</button>
-        </form>
+        <%-include ("partials/typeMessage")%>
         <%}%>
       </div>
     </section>
