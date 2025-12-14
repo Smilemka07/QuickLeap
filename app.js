@@ -1,12 +1,13 @@
 import express from "express";
-import pg from "pg";
+
 import bcrypt from "bcrypt";
 import session from "express-session";
 import passport from "passport";
 import { Strategy } from "passport-local";
 import dotenv from "dotenv";
-
 dotenv.config();
+import pg from "pg";
+import { getChatList } from "./services/chatService.js";
 
 const app = express();
 const port = 3000;
@@ -219,54 +220,8 @@ app.get("/messages", async (req, res) => {
   }
 
   try {
-    const listQuery = `
-    SELECT 
-     m.id AS match_id,  
+    const list = await getChatList(req.user.id);
 
-    CASE
-     WHEN m.mentor_id = $1 THEN mentee.id
-     ELSE mentor.id
-    END AS friend_id,
-
-    CASE
-     WHEN m.mentor_id = $1 THEN mentee.user_name
-     ELSE mentor.user_name
-    END AS friend_name,
-
-    CASE
-     WHEN m.mentor_id = $1 THEN mentee.profile_photo
-     ELSE mentor.profile_photo
-    END AS friend_pfp,
-
-    CASE
-     WHEN m.mentor_id = $1 THEN mentee.skills
-     ELSE mentor.skills
-    END AS friend_skills,
-
-     msg.content AS last_message,
-     msg.sent_at AS last_message_time,
-     msg.sender_id AS last_message_sender
-
-    FROM matches m 
-     JOIN cradentials mentor ON m.mentor_id = mentor.id
-     JOIN cradentials mentee ON m.mentee_id = mentee.id 
-
-     LEFT JOIN LATERAL (
-     SELECT content, sent_at, sender_id
-     FROM messages
-     WHERE match_id = m.id
-     ORDER BY sent_at DESC
-     LIMIT 1
-     ) msg ON true
-
-    WHERE m.mentor_id = $1 or m.mentee_id = $1
-
-    ORDER BY last_message_time DESC NULLS LAST;
-    `;
-
-    const listResult = await db.query(listQuery, [req.user.id]);
-    const list = listResult.rows;
-    console.log(list);
     res.render("messages", { currentPage: "messages", matches: list });
   } catch (err) {
     console.error("List error", err);
@@ -280,6 +235,7 @@ app.get("/messages/:matchId", async (req, res) => {
   }
 
   try {
+    const list = await getChatList(req.user.id);
     const messagesQuery = `SELECT
     msg.id,
     msg.sender_id,
@@ -291,18 +247,18 @@ app.get("/messages/:matchId", async (req, res) => {
    JOIN cradentials c ON msg.sender_id = c.id
    WHERE msg.match_id = $1
    ORDER BY msg.sent_at ASC;`;
-    
+
     const matchId = req.params.matchId;
     const messagesResult = await db.query(messagesQuery, [matchId]);
     const messages = messagesResult.rows;
-    
+
     console.table(messagesResult.rows);
 
     res.render("messages", {
       currentPage: "messages",
       matchId: matchId,
       messages: messages,
-       matches: list,
+      matches: list,
     });
   } catch (err) {
     console.log("Chat error", err);
