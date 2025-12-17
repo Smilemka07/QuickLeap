@@ -212,13 +212,11 @@ app.post("/messages", async (req, res) => {
     await db.query(query, [match_id, sender_id, content]);
 
     res.redirect(`/messages/${match_id}`);
-
   } catch (err) {
     console.error("Messages Error", err);
     res.status(500).send("Error sending message");
   }
 });
-
 
 app.get("/messages", async (req, res) => {
   if (!req.user) {
@@ -260,11 +258,15 @@ app.get("/messages/:matchId", async (req, res) => {
 
     console.table(messagesResult.rows);
 
+    const activeMatch = list.find((item) => item.match_id == matchId);
+
     res.render("messages", {
       currentPage: "messages",
       matchId: matchId,
       messages: messages,
       matches: list,
+      user: req.user,
+      name: activeMatch ? activeMatch.friend_name : null,
     });
   } catch (err) {
     console.log("Chat error", err);

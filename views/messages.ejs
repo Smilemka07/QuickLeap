@@ -9,31 +9,36 @@
     <section class="chat border rounded">
       <% if(typeof matchId == "undefined"){%>
       <!-- Chat List -->
-     <%-include ("partials/chatlist") %>
+      <%-include ("partials/chatlist") %>
 
       <!-- Chat Window -->
       <div class="chat-window"></div>
 
       <%}else{%>
-      
+
       <!-- Chat List -->
-     <%-include ("partials/chatlist") %>
+      <%-include ("partials/chatlist") %>
 
       <!-- Chat Window -->
       <div class="chat-window">
+       
         <div class="chat-header border">
-          <h3>Alice</h3>
+          <h3><%= name %></h3>
         </div>
 
         <div class="chat-messages">
-          <div class="message received">Hey! How are you?</div>
+          <% messages.forEach(msg => { %>
+            <div class="message <%= msg.sender_id === user.id ? 'sent': 'received' %>"><%= msg.content %></div>
+
+          <!-- <div class="message received">Hey! How are you?</div>
           <div class="message sent">I’m good, thanks! What about you?</div>
-          <div class="message received">Doing well :)</div>
+          <div class="message received">Doing well :)</div> -->
+           <% }) %>
         </div>
+      
 
         <!-- form -->
-        <%-include ("partials/typeMessage")%>
-        <%}%>
+        <%-include ("partials/typeMessage")%> <%}%>
       </div>
     </section>
   </div>
