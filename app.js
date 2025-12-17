@@ -200,19 +200,25 @@ app.post("/createTutorial", async (req, res) => {
 //messages tab
 
 app.post("/messages", async (req, res) => {
-  const content = req.body;
-  const sender_id = req.session.body;
+  const { content, match_id } = req.body;
+  const sender_id = req.user.id;
+
   try {
     const query = `
-    INSERT INTO messages 
-    (sender_id, content)
-    VALUES ($1,$2)
-   `;
+      INSERT INTO messages (match_id, sender_id, content)
+      VALUES ($1, $2, $3)
+    `;
+
+    await db.query(query, [match_id, sender_id, content]);
+
+    res.redirect(`/messages/${match_id}`);
+
   } catch (err) {
     console.error("Messages Error", err);
-    res.status(500).send("Error loading messages");
+    res.status(500).send("Error sending message");
   }
 });
+
 
 app.get("/messages", async (req, res) => {
   if (!req.user) {
