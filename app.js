@@ -64,7 +64,7 @@ app.get("/logout", (req, res) => {
 });
 
 // dashboard
-
+//made a list of 12 items to improve the app, version one is completed now we will make tweeks before launching
 app.get("/dashboard", async (req, res) => {
   if (req.isAuthenticated()) {
     const result = await db.query(
