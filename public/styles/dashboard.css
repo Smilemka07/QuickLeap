@@ -39,6 +39,7 @@
   height: 2rem;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .fa-bell {
@@ -221,7 +222,32 @@ a:link {
   background: #f9f9f9;
 }
 
+.pfp-wrapper {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.pfp {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
 /* right pannel */
 #right_pannel {
   color: #121517;
+}
+
+.right-card{
+  background-color: #EBECEF;
+  height: 12rem;
+  padding: 2rem 1rem 2rem 1rem;
+  border-radius: 4px;
+}
+
+.right-text{
+  padding-top: 0.6rem;
 }

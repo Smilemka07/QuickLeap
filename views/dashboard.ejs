@@ -67,21 +67,31 @@
           <div id="matches_section" class="bg_box">
             <h1 class="heading">Your Matches So Far</h1>
             <!-- small cards  -->
-             <div class="tutorial_container matches_container">
-
+            <div class="tutorial_container matches_container">
               <!-- card -->
-               <% matches.forEach(friend => { %>
-              <a href="/profile/view/<%= friend.friend_id %>" class="match_link">
-              <div class="match_card card">
-                <img  src="/<%= friend.friend_pfp %>" class="rounded-circle pfp" width="40px" height="40px" style="object-fit: cover;" alt="Profile icon">
-                <div class="card-body">
-                <h5 class="card-title"><%= friend.friend_name %></h5>
-                <p class="card-text"><%= friend.friend_skills %></p>
-                </div>
-              </div>
-             </a>
-             <%  })%>
-             </div>
+              <% matches.forEach(friend => { %>
+               <a href="/profile/view/<%= friend.friend_id %>" class="match_link">
+                 <div class="match_card card">
+                  <div class="pfp-wrapper">
+                   <img  src="/<%= friend.friend_pfp %>" class="rounded-circle pfp"  alt="Profile icon">
+                  </div>
+                   <div class="card-body">
+                     <h5 class="card-title"><%= friend.friend_name %></h5>
+                     <p class="card-text">
+                       <% if (friend.friend_skills && friend.friend_skills.length) { %>
+                          <%= friend.friend_skills.slice(0, 2).join(" · ") %>
+                          <% if (friend.friend_skills.length > 2) { %>
+                          +<%= (friend.friend_skills.length - 2) %>
+                          <% } %>
+                       <% } else { %>
+                         <span class="text-muted">No skills added</span>
+                       <% } %>
+                     </p>
+                   </div>
+                 </div>
+                </a>
+             <% })%>
+            </div>
           </div>
 
           <!-- requestes pannel  -->
@@ -90,13 +100,21 @@
           
 
         <div id="right_pannel" class="bg_box col-2">
-          <div>
-            <p>
-              Quick Tips / Highlights Suggested users to match with
-              Announcements App tips (“Add your top 3 skills to get better
-              matches”)
-            </p>
+          <div class="right-card">
+            <h3 class="right-title">Quick Tips</h3>
+            <p class="right-text"><%= quickTip %></p>
           </div>
+          <hr>
+          <div  class="right-card">
+           <h3 class="right-title">Highlights</h3>
+           <p class="right-text"><%= highlight %></p>
+          </div>
+          <hr>
+          <div class="right-card">
+            <h3 class="right-title">Did you know?</h3>
+            <p class="right-text"><%= didYouKnow %></p>
+          </div>
+           
         </div>
        
       </div>

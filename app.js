@@ -9,7 +9,6 @@ import pg from "pg";
 import { getChatList } from "./services/chatService.js";
 import flash from "connect-flash";
 
-
 const app = express();
 const port = 3000;
 const saltRounds = 10;
@@ -51,7 +50,7 @@ app.get("/", (req, res) => {
 
 app.get("/login", (req, res) => {
   res.render("login", {
-    error: req.flash("error")
+    error: req.flash("error"),
   });
 });
 
@@ -69,7 +68,20 @@ app.get("/logout", (req, res) => {
 });
 
 // dashboard
-//made a list of 12 items to improve the app, version one is completed now we will make tweeks before launching
+
+const quickTips = [
+  "Add your top 3 skills to get better matches.",
+  "Profiles with photos get more replies.",
+  "Be specific in your bio to build trust.",
+  "Replying quickly improves match quality.",
+];
+
+const didYouKnow = [
+  "Mentors who list skills get 2× more views.",
+  "Short bios perform better than long ones.",
+  "Consistent activity improves recommendations.",
+];
+
 app.get("/dashboard", async (req, res) => {
   if (req.isAuthenticated()) {
     const result = await db.query(
@@ -124,6 +136,10 @@ app.get("/dashboard", async (req, res) => {
 
     const matchesResult = await db.query(matchesQuery, [req.user.id]);
 
+    const randomTip = quickTips[Math.floor(Math.random() * quickTips.length)];
+    const randomFacts =
+      didYouKnow[Math.floor(Math.random() * didYouKnow.length)];
+
     const watchedQuery = `
       SELECT DISTINCT ON (t.id)
        t.*, ut.watched_at
@@ -144,6 +160,29 @@ app.get("/dashboard", async (req, res) => {
 
     const matchesList = matchesResult.rows;
     const watchedTutorials = watchedResult.rows;
+    
+    const newMatchesCount = `SELECT COUNT(*) 
+FROM matches
+WHERE (mentor_id = $1 OR mentee_id = $1)
+AND created_at >= NOW() - INTERVAL '7 days';
+`;
+
+const unreadMessages = `SELECT COUNT(*)
+FROM messages msg
+JOIN matches m ON msg.match_id = m.id
+WHERE (m.mentor_id = $1 OR m.mentee_id = $1)
+AND msg.sender_id != $1
+AND msg.sent_at >= NOW() - INTERVAL '3 days';
+`;
+    let highlight = null;
+     
+    if (newMatchesCount > 0) {
+      highlight = `You have ${newMatchesCount} new matches`;
+    } else if (unreadMessages > 0) {
+      highlight = `You have ${unreadMessages} unread messages`;
+    } else {
+      highlight = "You're all caught up 🎉";
+    }
 
     res.render("dashboard", {
       user: req.user,
@@ -155,6 +194,9 @@ app.get("/dashboard", async (req, res) => {
       },
       matches: matchesList,
       tutorials: watchedTutorials,
+      quickTip: randomTip,
+      didYouKnow: randomFacts,
+      highlight,
     });
   } else {
     res.redirect("/login");
@@ -507,7 +549,9 @@ passport.use(
           }
         });
       } else {
-        return done(null, false, { message: "Wrong credentials, please try again" });
+        return done(null, false, {
+          message: "Wrong credentials, please try again",
+        });
       }
     } catch (err) {
       console.log(err);
