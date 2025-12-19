@@ -4,38 +4,90 @@
 
 <div class="flex-container">
   <form action="/register" method="POST" class="border border-1 rounded-4">
-    <div class="mb-3">
-      <label for="exampleInputName1" class="form-label">Your Name</label>
-      <input
-        type="name"
-        class="form-control"
-        name="name"
-        id="exampleInputName1"
-        aria-describedby="emailHelp"
-      />
-    </div>
-    <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label">Email</label>
-      <input
-        type="email"
-        class="form-control"
-        id="exampleInputEmail1"
-        name="email"
-        aria-describedby="emailHelp"
-      />
-      <div id="emailHelp" class="form-text">
-        We'll never share your email with anyone else.
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="exampleInputName1" class="form-label">Your User Name</label>
+        <input
+          type="name"
+          placeholder="Jane.07"
+          class="form-control"
+          name="name"
+          id="exampleInputName1"
+          aria-describedby="emailHelp"
+        />
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="exampleInputPassword1" class="form-label">Password</label>
+        <input
+          type="password"
+          placeholder="Be creative, make a strong one!"
+          class="form-control"
+          id="exampleInputPassword1"
+          name="password"
+        />
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="exampleInputEmail1" class="form-label">Email</label>
+        <input
+          type="email"
+          placeholder="jane@example.com"
+          class="form-control"
+          id="exampleInputEmail1"
+          name="email"
+          aria-describedby="emailHelp"
+        />
+        <div id="emailHelp" class="form-text">
+          We'll never share your email with anyone else.
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="menteeOrMentor">Your Role</label>
+        <select class="form-select" name="role">
+          <option selected>Choose your role</option>
+          <option value="Mentor">Mentor</option>
+          <option value="Mentee">Mentee</option>
+        </select>
       </div>
     </div>
-    <div class="mb-3">
-      <label for="exampleInputPassword1" class="form-label">Password</label>
-      <input
-        type="password"
-        class="form-control"
-        id="exampleInputPassword1"
-        name="password"
-      />
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="exampleInputBio" class="form-label">Bio</label>
+        <textarea
+          class="form-control"
+          name="bio"
+          placeholder="I like all sunshines and flowers..."
+          id="floatingTextarea"
+          maxlength="200"
+          rows="3"
+        ></textarea>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="exampleInputPfp" class="form-label">Profile Photo</label>
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="inputGroupFile01">Upload</label>
+          <input
+            type="file"
+            class="form-control"
+            id="inputGroupFile01"
+            name="pfp"
+          />
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="exampleInputSkills" class="form-label">Interests</label>
+        <input
+          type="text"
+          class="form-control"
+          name="skills"
+          placeholder="e.g. React, Node, SQL"
+        />
+      </div>
+      <div class="text-center">
+        <a href="/Backend/views/dashboard.ejs">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </a>
+      </div>
     </div>
-   <a href="/Backend/views/dashboard.ejs"> <button type="submit" class="btn btn-primary"  >Submit</button> </a>
   </form>
 </div>

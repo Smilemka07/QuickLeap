@@ -1,5 +1,4 @@
 import express from "express";
-
 import bcrypt from "bcrypt";
 import session from "express-session";
 import passport from "passport";
@@ -8,6 +7,8 @@ import dotenv from "dotenv";
 dotenv.config();
 import pg from "pg";
 import { getChatList } from "./services/chatService.js";
+import flash from "connect-flash";
+
 
 const app = express();
 const port = 3000;
@@ -30,6 +31,8 @@ app.use(express.static("public"));
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(flash());
+
 // database
 const db = new pg.Client({
   user: process.env.DB_USER,
@@ -47,7 +50,9 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("login");
+  res.render("login", {
+    error: req.flash("error")
+  });
 });
 
 app.get("/register", (req, res) => {
@@ -421,6 +426,7 @@ app.post(
   passport.authenticate("local", {
     successRedirect: "/dashboard",
     failureRedirect: "/login",
+    failureFlash: "Wrong credentials, please try again",
   })
 );
 
@@ -428,6 +434,17 @@ app.post("/register", async (req, res) => {
   const userName = req.body.name;
   const userEmail = req.body.email;
   const userPassword = req.body.password;
+  const userRole = req.body.role;
+  const userBio = req.body.bio;
+  const userPfp = req.body.pfp;
+  const userSkills = req.body.skills
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (userBio.length > 200) {
+    return res.status(400).send("Bio too long");
+  }
 
   try {
     const checkResult = await db.query(
@@ -444,8 +461,8 @@ app.post("/register", async (req, res) => {
           console.log("Error hashing password:", err);
         } else {
           const result = await db.query(
-            "INSERT INTO cradentials (user_name, email, password_hash) VALUES ($1,$2,$3)",
-            [userName, userEmail, hash]
+            "INSERT INTO cradentials (user_name, email, password_hash, role, bio, skills, profile_photo) VALUES ($1,$2,$3,$4,$5,$6,$7)",
+            [userName, userEmail, hash, userRole, userBio, userSkills, userPfp]
           );
 
           console.log(result);
@@ -490,7 +507,7 @@ passport.use(
           }
         });
       } else {
-        return done("user not found");
+        return done(null, false, { message: "Wrong credentials, please try again" });
       }
     } catch (err) {
       console.log(err);
