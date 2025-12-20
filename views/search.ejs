@@ -18,24 +18,32 @@
           placeholder="Search users, tutorials, or interests…"
         />
       </form>
-      <button class="btn search-btn" id="search-btn"><i class="fas fa-search"></i></button>
+      <button class="btn search-btn" id="search-btn">
+        <i class="fas fa-search"></i>
+      </button>
     </div>
 
     <div class="results container mt-4">
       <% if (users.length > 0) { %>
-      <h3>Users</h3>
-      <div class="user-results">
+      <h3 class="heading">Users</h3>
+
+      <div class="user-results matches_container">
+        <!-- card -->
         <% users.forEach(u => { %>
-        <a href="/profile/view/<%= u.id %>" class="card">
-          <img
-            src="/<%= u.profile_photo %>"
-            class="rounded-circle"
-            width="40"
-            height="40"
-          />
-          <div class="card-body">
-            <h5><%= u.user_name %></h5>
-            <p><%= u.skills.join(", ") %></p>
+
+        <a href="/profile/view/<%= u.id %>" class="match_link">
+          <div class="match_card card">
+            <div class="pfp-wrapper">
+              <img
+                src="/<%= u.profile_photo %>"
+                class="rounded-circle pfp"
+                alt="Profile icon"
+              />
+            </div>
+            <div class="card-body">
+              <h5 class="card-title"><%= u.user_name %></h5>
+              <p card-text><%= u.skills.join(", ") %></p>
+            </div>
           </div>
         </a>
         <% }) %>
