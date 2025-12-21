@@ -21,21 +21,28 @@
 
       <!-- Chat Window -->
       <div class="chat-window">
-       
         <div class="chat-header border">
           <h3><%= name %></h3>
         </div>
 
-        <div class="chat-messages">
+        <div class="chat-messages vertical-scroll">
           <% messages.forEach(msg => { %>
-            <div class="message <%= msg.sender_id === user.id ? 'sent': 'received' %>"><%= msg.content %></div>
+          <div
+            class="message <%= msg.sender_id === user.id ? 'sent': 'received' %>"
+          >
+            <%= msg.content %>
+            <span
+              class="<%= msg.sender_id === user.id ? 'time-sent' : 'time-received' %>"
+              ><%= new Date(msg.sent_at).toLocaleTimeString([], { hour:
+              '2-digit', minute: '2-digit', hour12: false }) %>
+            </span>
+          </div>
 
           <!-- <div class="message received">Hey! How are you?</div>
           <div class="message sent">I’m good, thanks! What about you?</div>
           <div class="message received">Doing well :)</div> -->
-           <% }) %>
+          <% }) %>
         </div>
-      
 
         <!-- form -->
         <%-include ("partials/typeMessage")%> <%}%>

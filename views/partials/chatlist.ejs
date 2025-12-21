@@ -1,17 +1,23 @@
- <div class="chat-list">
-        <% matches.forEach(match => { %> 
-          <a href="/messages/<%= match.match_id %>" class="chat_list_item">
-        <div class="chat-item messages-active">
-          <img
-            src="/<%= match.friend_pfp %>"
-            alt="Profile picture"
-            class="profile-icon"
-          />
-          <div>
-            <p><strong><%= match.friend_name %></strong></p>
-            <p><%= match.last_message ?? "Say hello 👋" %></p>
-          </div>
-        </div>
-        </a>
-        <% }) %> 
+<div class="chat-list vertical-scroll">
+  <% matches.forEach(match => { %>
+  <a
+    href="/messages/<%= match.match_id %>"
+    class="chat_list_item"
+    style="color: black "
+  >
+    <div class="chat-item messages-active">
+      <div class="pfp-wrapper">
+      <img
+        src="/<%= match.friend_pfp %>"
+        class="rounded-circle pfp"
+        alt="Profile icon"
+      />
       </div>
+      <div class="chat-text">
+        <p class="card-title"><strong><%= match.friend_name %></strong></p>
+        <p class="card-text last-message"><%= match.last_message ?? "Say hello 👋" %></p>
+      </div>
+    </div>
+  </a>
+  <% }) %>
+</div>

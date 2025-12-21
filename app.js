@@ -303,8 +303,6 @@ app.get("/messages/:matchId", async (req, res) => {
     const messagesResult = await db.query(messagesQuery, [matchId]);
     const messages = messagesResult.rows;
 
-    console.table(messagesResult.rows);
-
     const activeMatch = list.find((item) => item.match_id == matchId);
 
     res.render("messages", {
