@@ -391,6 +391,50 @@ app.get("/profile", async (req, res) => {
   }
 });
 
+app.patch("/profile", async (req, res) => {
+   if (!req.user) {
+      return res.redirect("/login");
+    }
+
+    const { user_name, bio, skills } = req.body;
+  try {
+    
+    await db.query(
+      `UPDATE cradentials
+       SET user_name=$1, bio=$2, skills=$3
+       WHERE id=$4`,
+      [user_name, bio, skills, req.user.id]
+    );
+
+    res.redirect("/profile");
+
+  } catch (err) {
+     console.error(err);
+    res.status(500).send("Error editing profile");
+  }
+});
+
+app.delete("/profile", async (req, res) => {
+  if (!req.user) {
+    return res.redirect("/login");
+  }
+
+  try {
+    await db.query(
+      `DELETE FROM cradentials WHERE id = $1`,
+      [req.user.id]
+    );
+
+    req.logout(() => {
+      res.redirect("/");
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error deleting profile");
+  }
+});
+
+
 // other users profile tab
 
 app.get("/profile/view/:id", async (req, res) => {

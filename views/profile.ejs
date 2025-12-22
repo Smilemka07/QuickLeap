@@ -2,9 +2,14 @@
 
 <div class="profile_main container">
   <div class="col-3 left_side bg_box">
-    <img src="/<%= user.profile_photo %>" alt="Profile picture" class="profile-icon" />
+    <img
+      src="/<%= user.profile_photo %>"
+      alt="Profile picture"
+      class="profile-icon"
+    />
     <h3><%= user.user_name %></h3>
     <p><%= user.email %></p>
+    <p><b><%= user.role %></b></p>
     <div class="about-sec">
       <h4>About</h4>
       <p><%= user.bio %></p>
@@ -13,17 +18,35 @@
       <h4>Interests</h4>
       <div id="tags"></div>
     </div>
-   <% if (isOwnProfile) { %>
-    <button class="btn btn-primary"><a href="/logout">Logout</a></button>
+    <% if (isOwnProfile) { %>
+    <div class="button-container">
+      <button class="btn btn-primary"><a href="/profile/edit">Edit</a></button>
+      <form
+        action="/logout"
+        method="POST"
+        style="display: inline"
+        onsubmit="return confirm('Are you sure you want to logout?');"
+      >
+        <button class="btn btn-primary"><a href="/logout">Logout</a></button>
+      </form>
+      <form action="/profile" method="POST" style="display:inline;"
+      onsubmit="return confirm('This will permanently delete your account. Continue?');">
+  <input type="hidden" name="_method" value="DELETE">
+      <button class="btn btn-primary"><a href="/delete">Delete Account</a></button>
+      </form>
+    </div>
     <% } %>
   </div>
 
   <div class="col-9 right_side bg_box">
-
-    <!-- tutorials published by user  -->
+    <!-- tutorials published by mentor or watched by mentee  -->
 
     <div class="published">
+      <% if(user.role === "Mentor" ){ %>
       <h2>Tutorials published</h2>
+      <% }else{ %>
+      <h2>Tutorials watched</h2>
+      <% } %>
       <div class="published-container">
         <% tutorials.forEach(tut => { %>
         <div class="tutorial_card card" style="width: 18rem; margin-top: 1rem">
@@ -38,10 +61,10 @@
           <div class="card-body">
             <h5 class="card-title"><%= tut.title %></h5>
             <p class="card-text"><%= tut.description %></p>
-            <a href="#" class="btn btn-primary">Watch</a>
+            <a href="/tutorial/<%= tut.id %>" class="btn btn-primary">Watch</a>
           </div>
         </div>
-         <% }) %>
+        <% }) %>
       </div>
     </div>
   </div>
@@ -59,4 +82,3 @@
     container.appendChild(tag);
   });
 </script>
-

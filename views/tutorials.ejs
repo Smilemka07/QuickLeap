@@ -31,18 +31,25 @@
           <option value="video">Video</option>
         </select>
 </div>
+       
         <!-- Notes (text) -->
         <div id="notesField" class="mb-3">
           <label for="notes" class="form-label">Notes</label>
           <input class="form-control inputs" type="file" id="notes" name="notes" multiple>
         </div>
-
+        
         <!-- Video upload -->
         <div id="videoField" style="display: none" class="mb-3">
           <label for="video" class="form-label">Upload Video</label>
           <input class="form-control inputs" type="file" id="video" name="video" />
         </div>
 
+        <!-- thumbnail upload  -->
+         <div class="input-group mb-3">
+          <label class="input-group-text" for="inputGroupFile01">Thumbnail</label>
+          <input type="file" class="form-control" id="inputGroupFile01">
+         </div>
+       
         <!-- Submit -->
         <button type="submit" class="btn btn-primary create">Create</button>
       </div>
@@ -50,3 +57,19 @@
   </div>
   </div>
 </div>
+
+<script>
+function toggleFields() {
+  const type = document.getElementById("content_type").value;
+
+  document.getElementById("notesField").style.display =
+    type === "notes" ? "block" : "none";
+
+  document.getElementById("videoField").style.display =
+    type === "video" ? "block" : "none";
+}
+
+document.querySelector('[name="notes"]').disabled = type !== "notes";
+document.querySelector('[name="video"]').disabled = type !== "video";
+
+</script>

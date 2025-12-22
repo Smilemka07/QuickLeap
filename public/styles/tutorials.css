@@ -5,3 +5,8 @@
 .inputs {
    background-color: #EBECEF;
 }
+
+.viewer {
+    max-height:700px;
+
+}

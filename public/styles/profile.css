@@ -34,3 +34,19 @@
   overflow-x: auto;
   white-space: nowrap;
 }
+
+
+
+.button-container {
+  display: flex;
+
+  align-items: center;
+}
+
+.button-container form {
+  margin: 0;
+}
+
+.button-container button {
+  white-space: nowrap;
+}
