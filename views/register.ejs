@@ -1,9 +1,10 @@
 <%-include ("partials/header") %>
 
-<h1 class="page-heading">Register</h1>
+
+<h1 class="page-heading h3"><%= isEdit ? "Edit Profile" : "Register" %></h1>
 
 <div class="flex-container">
-  <form action="/register" method="POST" class="border border-1 rounded-4">
+  <form action="<%= isEdit ? '/profile?_method=PATCH' : '/register' %>" method="POST"  enctype="multipart/form-data" class="border border-1 rounded-4">
     <div class="row">
       <div class="col-md-6 mb-3">
         <label for="exampleInputName1" class="form-label">Your User Name</label>
@@ -14,8 +15,11 @@
           name="name"
           id="exampleInputName1"
           aria-describedby="emailHelp"
+          value="<%= isEdit ? user.user_name : '' %>"
         />
       </div>
+
+      <% if (!isEdit) { %>
 
       <div class="col-md-6 mb-3">
         <label for="exampleInputPassword1" class="form-label">Password</label>
@@ -40,13 +44,15 @@
         <div id="emailHelp" class="form-text">
           We'll never share your email with anyone else.
         </div>
+        
       </div>
+      <% } %>
       <div class="col-md-6 mb-3">
         <label for="menteeOrMentor">Your Role</label>
         <select class="form-select" name="role">
           <option selected>Choose your role</option>
-          <option value="Mentor">Mentor</option>
-          <option value="Mentee">Mentee</option>
+          <option value="Mentor"  <%= isEdit && user.role === "Mentor" ? "selected" : "" %>>Mentor</option>
+          <option value="Mentee"  <%= isEdit && user.role === "Mentee" ? "selected" : "" %>>Mentee</option>
         </select>
       </div>
     </div>
@@ -60,20 +66,32 @@
           id="floatingTextarea"
           maxlength="200"
           rows="3"
-        ></textarea>
+        ><%= isEdit ? user.bio : '' %></textarea>
       </div>
+
+      
       <div class="col-md-6 mb-3">
         <label for="exampleInputPfp" class="form-label">Profile Photo</label>
+        <% if (isEdit) { %>
         <div class="input-group mb-3">
-          <label class="input-group-text" for="inputGroupFile01">Upload</label>
+           <img src="/<%= user.profile_photo %>" 
+         alt="Profile Photo"
+         style="width:80px;height:80px;border-radius:50%;object-fit:cover;"/>
+         </div>
+         <% } %>
+          <div class="input-group mb-3">
+          <label class="input-group-text" for="inputGroupFile01"><%= isEdit ? "Change Profile Photo" : "Upload Profile Photo" %></label>
           <input
             type="file"
             class="form-control"
             id="inputGroupFile01"
             name="pfp"
           />
-        </div>
+          </div>
+        
       </div>
+
+
       <div class="col-md-6 mb-3">
         <label for="exampleInputSkills" class="form-label">Interests</label>
         <input
@@ -81,6 +99,7 @@
           class="form-control"
           name="skills"
           placeholder="e.g. React, Node, SQL"
+          value="<%= isEdit ? user.skills.join(', ') : '' %>"
         />
       </div>
       <div class="text-center">
@@ -89,5 +108,8 @@
         </a>
       </div>
     </div>
+    <!-- DEBUG -->
+
+
   </form>
 </div>

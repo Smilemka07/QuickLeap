@@ -3,7 +3,7 @@
 <div class="profile_main container">
   <div class="col-3 left_side bg_box">
     <img
-      src="/<%= user.profile_photo %>"
+      src="<%= user.profile_photo %>"
       alt="Profile picture"
       class="profile-icon"
     />
@@ -20,7 +20,7 @@
     </div>
     <% if (isOwnProfile) { %>
     <div class="button-container">
-      <button class="btn btn-primary"><a href="/profile/edit">Edit</a></button>
+      <a href="/profile/edit" class="btn btn-primary">Edit</a>
       <form
         action="/logout"
         method="POST"

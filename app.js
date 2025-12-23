@@ -8,6 +8,8 @@ dotenv.config();
 import pg from "pg";
 import { getChatList } from "./services/chatService.js";
 import flash from "connect-flash";
+import methodOverride from "method-override";
+import upload from "./middleware/upload.js";
 
 const app = express();
 const port = 3000;
@@ -43,6 +45,7 @@ const db = new pg.Client({
 
 db.connect();
 
+app.use(methodOverride("_method"));
 //routes
 app.get("/", (req, res) => {
   res.render("index");
@@ -160,14 +163,14 @@ app.get("/dashboard", async (req, res) => {
 
     const matchesList = matchesResult.rows;
     const watchedTutorials = watchedResult.rows;
-    
+
     const newMatchesCount = `SELECT COUNT(*) 
 FROM matches
 WHERE (mentor_id = $1 OR mentee_id = $1)
 AND created_at >= NOW() - INTERVAL '7 days';
 `;
 
-const unreadMessages = `SELECT COUNT(*)
+    const unreadMessages = `SELECT COUNT(*)
 FROM messages msg
 JOIN matches m ON msg.match_id = m.id
 WHERE (m.mentor_id = $1 OR m.mentee_id = $1)
@@ -175,7 +178,7 @@ AND msg.sender_id != $1
 AND msg.sent_at >= NOW() - INTERVAL '3 days';
 `;
     let highlight = null;
-     
+
     if (newMatchesCount > 0) {
       highlight = `You have ${newMatchesCount} new matches`;
     } else if (unreadMessages > 0) {
@@ -197,6 +200,7 @@ AND msg.sent_at >= NOW() - INTERVAL '3 days';
       quickTip: randomTip,
       didYouKnow: randomFacts,
       highlight,
+      isOwnProfile: true,
     });
   } else {
     res.redirect("/login");
@@ -391,28 +395,70 @@ app.get("/profile", async (req, res) => {
   }
 });
 
-app.patch("/profile", async (req, res) => {
-   if (!req.user) {
-      return res.redirect("/login");
-    }
+// edit profile
+app.get("/profile/edit", async (req, res) => {
+  if (!req.user) return res.redirect("/login");
 
-    const { user_name, bio, skills } = req.body;
   try {
-    
-    await db.query(
-      `UPDATE cradentials
-       SET user_name=$1, bio=$2, skills=$3
-       WHERE id=$4`,
-      [user_name, bio, skills, req.user.id]
+    const result = await db.query(
+      "SELECT * FROM cradentials WHERE id = $1",
+      [req.user.id]
     );
 
-    res.redirect("/profile");
-
+    res.render("register", {
+      user: result.rows[0],
+      isEdit: true,
+    });
   } catch (err) {
-     console.error(err);
-    res.status(500).send("Error editing profile");
+    console.error(err);
+    res.status(500).send("Error loading edit profile");
   }
 });
+
+
+
+app.patch(
+  "/profile",
+  upload.single("pfp"),
+  async (req, res) => {
+    if (!req.user) return res.redirect("/login");
+
+    const { name, bio, skills, role } = req.body;
+
+    const skillsArray = skills
+      ? skills.split(",").map(s => s.trim())
+      : [];
+
+   
+    const current = await db.query(
+      "SELECT profile_photo FROM cradentials WHERE id = $1",
+      [req.user.id]
+    );
+
+    const profilePhoto = req.file
+      ? `/uploads/${req.file.filename}`
+      : current.rows[0].profile_photo;
+
+    try {
+      await db.query(
+        `UPDATE cradentials
+         SET user_name=$1,
+             bio=$2,
+             skills=$3,
+             role=$4,
+             profile_photo=$5
+         WHERE id=$6`,
+        [name, bio, skillsArray, role, profilePhoto, req.user.id]
+      );
+
+      res.redirect("/profile");
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error editing profile");
+    }
+  }
+);
+
 
 app.delete("/profile", async (req, res) => {
   if (!req.user) {
@@ -420,10 +466,7 @@ app.delete("/profile", async (req, res) => {
   }
 
   try {
-    await db.query(
-      `DELETE FROM cradentials WHERE id = $1`,
-      [req.user.id]
-    );
+    await db.query(`DELETE FROM cradentials WHERE id = $1`, [req.user.id]);
 
     req.logout(() => {
       res.redirect("/");
@@ -433,7 +476,6 @@ app.delete("/profile", async (req, res) => {
     res.status(500).send("Error deleting profile");
   }
 });
-
 
 // other users profile tab
 
