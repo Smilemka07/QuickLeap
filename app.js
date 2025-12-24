@@ -25,6 +25,7 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 
@@ -45,7 +46,7 @@ const db = new pg.Client({
 
 db.connect();
 
-app.use(methodOverride("_method"));
+
 //routes
 app.get("/", (req, res) => {
   res.render("index");
@@ -61,14 +62,6 @@ app.get("/register", (req, res) => {
   res.render("register");
 });
 
-app.get("/logout", (req, res) => {
-  req.logout(function (err) {
-    if (err) {
-      return next(err);
-    }
-    res.redirect("/");
-  });
-});
 
 // dashboard
 
@@ -459,8 +452,12 @@ app.patch(
   }
 );
 
+app.post("/logout", (req, res) => {
+  req.logout(() => res.redirect("/"));
+});
 
-app.delete("/profile", async (req, res) => {
+
+app.post("/profile", async (req, res) => {
   if (!req.user) {
     return res.redirect("/login");
   }

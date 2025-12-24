@@ -22,7 +22,14 @@
             </ul>
           </div>
         </div>
-        <button class="btn btn-primary"><a href="/logout">Logout</a></button>
+        <form
+        action="/logout"
+        method="POST"
+        style="display: inline"
+        onsubmit="return confirm('Are you sure you want to logout?');"
+      >
+        <button type="submit" class="btn btn-primary">Logout</button>
+      </form>
       </div>
     </div>
   </div>
