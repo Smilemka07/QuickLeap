@@ -46,6 +46,10 @@ const db = new pg.Client({
 
 db.connect();
 
+app.use((req, res, next) => {
+  res.locals.user = req.user || null;
+  next();
+});
 
 //routes
 app.get("/", (req, res) => {

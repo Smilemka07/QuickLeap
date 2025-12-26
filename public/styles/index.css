@@ -10,13 +10,17 @@
 
 }
 .btn {
-    margin-top: 0.8rem;
+  margin-top: 0.8rem;
 }
 form {
-    padding: 2rem;
+  padding: 2rem;
 }
 .page-heading{
 position: fixed;
 top: 1.6rem;
 left: 2rem;
+}
+
+.btn-form{
+  padding: 0;
 }

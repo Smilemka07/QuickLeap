@@ -239,13 +239,16 @@ a:link {
 /* right pannel */
 #right_pannel {
   color: #121517;
+  background-color: #EBECEF;
+    border-radius: 4px;
+}
+
+#right_pannel h3 {
+   font-size: 2rem;
 }
 
 .right-card{
-  background-color: #EBECEF;
-  height: 12rem;
   padding: 2rem 1rem 2rem 1rem;
-  border-radius: 4px;
 }
 
 .right-text{
