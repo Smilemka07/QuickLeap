@@ -12,7 +12,7 @@
             alt="Profile picture"
             class="profile-icon"
         /></a>
-        <div class="notif_container">
+        <!-- <div class="notif_container">
          <i class="fas fa-bell"></i>
           <div  class="notif_panel">
             <ul>
@@ -21,14 +21,16 @@
               <li>Invite accepted</li>
             </ul>
           </div>
-        </div>
+        </div> -->
         <form class="btn-form"
         action="/logout"
         method="POST"
         style="display: inline"
         onsubmit="return confirm('Are you sure you want to logout?');"
       >
-        <button type="submit" class="btn btn-primary">Logout</button>
+        <button type="submit" class="btn btn-primary"> <span class="logout-text">Logout</span>
+        <i class="fas fa-sign-out logout-icon" aria-hidden="true"></i></button>
+       
       </form>
       </div>
     </div>

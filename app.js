@@ -79,7 +79,7 @@ const quickTips = [
 const didYouKnow = [
   "Mentors who list skills get 2× more views.",
   "Short bios perform better than long ones.",
-  "Consistent activity improves recommendations.",
+  "Consistent activity improves recommen-dations.",
 ];
 
 app.get("/dashboard", async (req, res) => {

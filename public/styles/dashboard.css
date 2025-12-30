@@ -16,7 +16,6 @@
   background-color: #f2f2f3;
 }
 
-
 #logo {
   font-size: 1.8rem;
   color: #7ecddd;
@@ -47,17 +46,17 @@
   color: #7ecddd;
 }
 
-.fa-bell:hover{
+.fa-bell:hover {
   cursor: pointer;
 }
 
 .notif_panel {
   position: absolute;
   right: 0;
-  top: 120%; 
+  top: 120%;
   width: 250px;
-  background: #EFF4F6;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  background: #eff4f6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   display: none;
   z-index: 50;
@@ -71,15 +70,15 @@
 }
 
 .notif_panel li {
-  color: #4F7E87;
+  color: #4f7e87;
   padding: 0.5rem;
-  border-bottom: 1px solid #C2ECF0;
+  border-bottom: 1px solid #c2ecf0;
 }
 
 /* profile section inside navbar  */
 
 .profile-container {
-  width: 14rem;
+  width: 10rem;
   display: flex;
   justify-content: space-evenly;
   border-left: 2px solid #ebecef;
@@ -91,6 +90,9 @@ button a {
   font-weight: 600;
 }
 
+.logout-icon {
+  display: none;
+}
 /* main body (content other than navbar) */
 
 .main_body {
@@ -128,6 +130,10 @@ button a {
 .selected {
   font-size: 2rem;
   font-weight: 700;
+}
+
+.page-icon{
+  display: none;
 }
 
 /* center pannel */
@@ -200,7 +206,7 @@ button a {
   border-color: #7ecddd;
 }
 
-.match_link{
+.match_link {
   display: inline-block;
   margin-right: 10px;
 }
@@ -239,18 +245,68 @@ a:link {
 /* right pannel */
 #right_pannel {
   color: #121517;
-  background-color: #EBECEF;
-    border-radius: 4px;
+  background-color: #ebecef;
+  border-radius: 4px;
 }
 
 #right_pannel h3 {
-   font-size: 2rem;
+  font-size: 2rem;
 }
-
-.right-card{
+.right-card {
   padding: 2rem 1rem 2rem 1rem;
 }
 
-.right-text{
+.right-text {
   padding-top: 0.6rem;
+}
+
+/* ----- responsivenes ------- */
+
+/* for mobile */
+
+@media (max-width: 576px) {
+  /* right panel */
+  #right_pannel {
+    display: none;
+  }
+
+  #quick_status{
+    flex-direction: column;
+  }
+
+  .page-icon{
+    display: block;
+  }
+  .page-tag{
+    display: none;
+  }
+ 
+}
+
+/* for tablet */
+@media (max-width: 768px) {
+  /* right pannel */
+  #right_pannel h3 {
+    font-size: 1.1rem;
+  }
+  #right_pannel p {
+    font-size: 0.8rem;
+  }
+  /* navbar */
+
+  #navbar {
+    padding: 0.8rem;
+  }
+
+  .container em {
+    display: none;
+  }
+  .logout-text {
+    display: none;
+  }
+
+  .logout-icon {
+    display: inline-block;
+    font-size: 0.8rem;
+  }
 }
