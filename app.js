@@ -12,7 +12,7 @@ import methodOverride from "method-override";
 import upload from "./middleware/upload.js";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+
 const saltRounds = 10;
 
 //express-session
@@ -652,6 +652,4 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-app.listen(port, () => {
-  console.log(`Server running at: http://localhost:${port}`);
-});
+export default app;
