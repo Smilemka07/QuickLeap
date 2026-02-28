@@ -12,7 +12,7 @@ import methodOverride from "method-override";
 import upload from "./middleware/upload.js";
 
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 const saltRounds = 10;
 
 //express-session
