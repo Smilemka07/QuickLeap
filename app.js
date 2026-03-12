@@ -15,6 +15,8 @@ const app = express();
 
 const saltRounds = 10;
 
+const port = 3000;
+
 //express-session
 app.use(
   session({
@@ -652,4 +654,6 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-export default app;
+app.listen(port, ()=>{
+  console.log(`Server is running at: http://localhost:${port}`);
+});
