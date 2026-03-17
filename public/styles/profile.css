@@ -35,18 +35,27 @@
   white-space: nowrap;
 }
 
-
-
 .button-container {
   display: flex;
-
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
 }
+
+
+.button-container > *{
+   display: flex;
+}
+
+.button-container button, .button-container a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  text-decoration: none;
+} 
 
 .button-container form {
   margin: 0;
-}
-
-.button-container button {
-  white-space: nowrap;
+  padding: 0;
 }
