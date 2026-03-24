@@ -6,6 +6,8 @@ The project focuses on authentication, relational database design, file uploads,
 ## Features
 
 * User authentication with session management
+<img width="671" height="524" alt="image" src="https://github.com/user-attachments/assets/9bee2e75-8369-4686-9771-c13ba3496e87" />
+
 * Role-based accounts (Mentor / Mentee)
 * Editable user profiles
 * Profile image upload using Multer
