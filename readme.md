@@ -8,7 +8,6 @@ The project focuses on authentication, relational database design, file uploads,
 * User authentication with session management
 * Role-based accounts (Mentor / Mentee)
 * Editable user profiles
-* Profile image upload using Multer
 * Mentor–mentee matching system
 * Match-based messaging system
 * Tutorial publishing and viewing
@@ -23,7 +22,6 @@ The project focuses on authentication, relational database design, file uploads,
 * PostgreSQL
 * Passport.js
 * Express-session
-* Multer
 
 **Frontend:**
 * EJS
@@ -37,14 +35,17 @@ QuickLeap
 │
 ├── public
 │   ├── styles
-│   ├── images
+│   ├── scripts
+|   ├── images
+|   ├── NotesTuts
 │   └── uploads
 │
+├── Services
+│   └── chatService.js
+|
 ├── views
 │   ├── partials
-│   └── pages
-│
-├── middleware
+│   └── pages ".ejs"
 │
 ├── app.js
 ├── package.json
